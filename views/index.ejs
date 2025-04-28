@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Epstein Cricket League</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <img src="/logo.png" alt="ECL Logo" class="logo">
+    <h1>Epstein Cricket League</h1>
+  </header>
+
+  <main>
+    <% if (isAdmin) { %>
+      <section class="card">
+        <h2>Add New Match</h2>
+        <form action="/add-match" method="POST" class="form-inline">
+          <select name="team1" required>
+            <% for (let t in teams) { %>
+              <option value="<%= t %>"><%= t %></option>
+            <% } %>
+          </select>
+          <span>vs</span>
+          <select name="team2" required>
+            <% for (let t in teams) { %>
+              <option value="<%= t %>"><%= t %></option>
+            <% } %>
+          </select>
+          <button type="submit">Create</button>
+        </form>
+      </section>
+    <% } %>
+
+    <section class="card">
+      <h2>Matches</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Team 1</th><th>Team 2</th>
+            <th>Score 1</th><th>Score 2</th><th>Winner</th>
+            <% if (isAdmin) { %><th>Actions</th><% } %>
+          </tr>
+        </thead>
+        <tbody>
+          <% matches.forEach(m => { %>
+            <tr>
+              <td><%= m.id %></td>
+              <td>
+                <%= m.team1 %>
+                <span class="captain">– <%= teams[m.team1] %></span>
+              </td>
+              <td>
+                <%= m.team2 %>
+                <span class="captain">– <%= teams[m.team2] %></span>
+              </td>
+              <td><%= m.score_team1 ?? '–' %></td>
+              <td><%= m.score_team2 ?? '–' %></td>
+              <td><%= m.winner ?? '–' %></td>
+
+              <% if (isAdmin) { %>
+              <td>
+                <form action="/update-winner" method="POST" class="form-block">
+                  <input type="hidden" name="matchId" value="<%= m.id %>">
+                  <input type="text" name="score_team1" placeholder="Score <%= m.team1 %>" required>
+                  <input type="text" name="score_team2" placeholder="Score <%= m.team2 %>" required>
+                  <select name="winner" required>
+                    <option value="<%= m.team1 %>"><%= m.team1 %></option>
+                    <option value="<%= m.team2 %>"><%= m.team2 %></option>
+                  </select>
+                  <button type="submit">Update</button>
+                </form>
+                <form action="/delete-match" method="POST" class="form-inline small">
+                  <input type="hidden" name="id" value="<%= m.id %>">
+                  <button type="submit" class="danger">Delete</button>
+                </form>
+              </td>
+              <% } %>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Points Table</h2>
+      <table>
+        <thead><tr><th>Team</th><th>Points</th></tr></thead>
+        <tbody>
+          <% Object.entries(points).sort((a, b) => b[1] - a[1]).forEach(([t, p]) => { %>
+            <tr>
+              <td>
+                <strong><%= t %></strong>
+                <span class="captain">– <%= teams[t] %></span>
+              </td>
+              <td><%= p %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+    <% if (isAdmin) { %>
+      <div class="center">
+        <a href="/logout" class="button">Logout</a>
+      </div>
+    <% } else { %>
+      <div class="center">
+        <a href="/admin" class="button">Admin Login</a>
+      </div>
+    <% } %>
+  </main>
+</body>
+</html>

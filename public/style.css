@@ -1,0 +1,112 @@
+/* Base */
+* {
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background: #F4F2EB;
+    color: #333;
+    line-height: 1.5;
+  }
+  a {
+    text-decoration: none;
+  }
+  button {
+    cursor: pointer;
+  }
+  
+  /* Layout */
+  header {
+    background: #0F1C3F;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .logo {
+    height: 50px;
+  }
+  main {
+    padding: 2rem;
+    max-width: 900px;
+    margin: auto;
+  }
+  .center { text-align: center; margin: 2rem 0; }
+  .center-card {
+    max-width: 400px;
+    margin: 5rem auto;
+    padding: 2rem;
+  }
+  
+  /* Cards & Tables */
+  .card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  table th, table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  /* Forms */
+  .form-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .form-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  input, select, button {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  button {
+    background: #0F1C3F;
+    color: white;
+    font-weight: 600;
+    border: none;
+    transition: background 0.2s;
+  }
+  button:hover {
+    background: #16294f;
+  }
+  .small {
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+  .danger {
+    background: #e74c3c;
+  }
+  .danger:hover {
+    background: #c0392b;
+  }
+  .small-link {
+    display: block;
+    margin-top: 1rem;
+    color: #0F1C3F;
+  }
+  /* smaller, italicized captain name */
+.captain {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #555;
+    margin-left: 0.25em;
+  }
+  
