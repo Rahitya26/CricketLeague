@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const db = require('./db');
+require('dotenv').config();
 
 const app = express();
 const PORT = 3000;
@@ -12,10 +13,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
 app.use(session({
-  secret: 'yourSecretKey',
-  resave: false,
-  saveUninitialized: true
-}));
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+  }));
 
 // --- Teams List ---
 const teams = {
