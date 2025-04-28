@@ -3,6 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const db = require('./db');
 require('dotenv').config();
+import { Analytics } from "@vercel/analytics/react"
 
 const app = express();
 const PORT = 3000;
