@@ -1,14 +1,13 @@
-const { Pool } = require('pg');
+// db.js
 require('dotenv').config();
-console.log('DB_PASS:', process.env.DB_PASS); // Log the password
+const { Pool } = require('pg');
 
-// PostgreSQL connection pool
+// Create the pool using DATABASE_URL from your .env file
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASS,
-  port: process.env.DB_PORT
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false  // required for some hosts like Supabase
+  }
 });
 
 module.exports = {
