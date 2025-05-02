@@ -404,3 +404,101 @@ button.danger:hover {
   top: 0;
   left: 0;
 }
+/* ─── Header ─────────────────────────────────────────────────── */
+header {
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: slideDown 0.6s ease-out;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 250px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.nav-link {
+  color: #0df;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  padding: 0.5rem 0;
+}
+
+/* ─── Main Container ─────────────────────────────────────────── */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* ─── Cards ──────────────────────────────────────────────────── */
+.card {
+  background: rgba(18, 18, 27, 0.4);
+  border: 1px solid #0df;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 12px rgba(13,223,255,0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeInUp 0.6s ease-out;
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  main {
+    width: 85%;
+    padding: 0;
+  }
+  
+  .card {
+    padding: 1.25rem;
+  }
+  
+  header {
+    padding: 1rem;
+  }
+  
+  .logo-title {
+    min-width: 200px;
+  }
+  
+  .logo {
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    width: 90%;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .logo-title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .nav-link {
+    font-size: 0.9rem;
+  }
+}
