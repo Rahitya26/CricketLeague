@@ -2,19 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login</title>
   <link rel="stylesheet" href="/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="center-card">
+  <div id="particles-js"></div>
+  
+  <main class="login-card">
     <h1>Admin Login</h1>
     <form action="/admin" method="POST" class="form-block">
-      <input type="text"  name="username" placeholder="Username" required autofocus>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
+      <input type="text" name="username" placeholder="Username" required autofocus>
+      <div class="password-wrapper">
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <label class="show-password">
+          <input type="checkbox" id="togglePassword"> Show Password
+        </label>
+      </div>
+      <button type="submit" class="primary">Login</button>
     </form>
     <a href="/" class="small-link">← Back to Home</a>
   </main>
+
+  <script>
+    document.getElementById('togglePassword').addEventListener('change', function() {
+      const pwd = document.getElementById('password');
+      pwd.type = this.checked ? 'text' : 'password';
+    });
+    
+    // Initialize particles.js with lighter settings for login page
+    if (typeof particlesJS !== 'undefined') {
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 40, density: { enable: true, value_area: 800 } },
+          color: { value: "#0df" },
+          opacity: { value: 0.3, random: true },
+          size: { value: 2, random: true },
+          line_linked: { enable: true, distance: 200, color: "#0df", opacity: 0.2, width: 1 },
+          move: { enable: true, speed: 2 }
+        },
+        interactivity: {
+          events: {
+            onhover: { enable: true, mode: "repulse" }
+          }
+        }
+      });
+    }
+  </script>
 </body>
 </html>
