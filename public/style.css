@@ -6,8 +6,8 @@
   font-family: 'Montserrat', sans-serif;
 }
 body {
-  background: #0a0a0f;
-  color: #ddd;
+  background: #f5f5f5;
+  color: #333;
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
@@ -23,6 +23,7 @@ header {
   align-items: center;
   justify-content: space-between;
   animation: slideDown 0.6s ease-out;
+  background-color: #1a3a1f; /* Dark green */
 }
 
 .logo {
@@ -34,10 +35,29 @@ header {
   align-items: center;
   gap: 1rem;
 }
+.logo-title h1 {
+  color: white;
+  position: relative; /* This is necessary for positioning the pseudo-element */
+}
+
+.logo-title h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px; /* Adjust thickness of the border */
+  background-color: white; /* Color of the border */
+  transition: width 0.3s ease; /* Animation for the width */
+}
+
+.logo-title h1:hover::after {
+  width: 100%; /* The border will expand to full width on hover */
+}
 
 /* nav links */
 .nav-link {
-  color: #0df;
+  color: #f8d210; /* Yellow */
   font-weight: 600;
   margin-left: 1.5rem;
   position: relative;
@@ -51,7 +71,7 @@ header {
   height: 2px;
   bottom: -2px;
   left: 0;
-  background: #0df;
+  background: #f8d210; /* Yellow */
   transition: width 0.3s;
 }
 
@@ -65,30 +85,31 @@ main {
   max-width: 1100px;
   margin: 2rem auto;
   padding: 0 1rem;
+  opacity: 0.9;
 }
 
 /* ─── Cards ──────────────────────────────────────────────────── */
 .card {
-  background: rgba(18, 18, 27, 0.4);
-  border: 1px solid #0df;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #1a3a1f; /* Dark green */
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 0 12px rgba(13,223,255,0.2);
+  box-shadow: 0 0 12px rgba(26, 58, 31, 0.2);
   transition: transform 0.3s, box-shadow 0.3s;
   animation: fadeInUp 0.6s ease-out;
 }
 
 .card:hover {
-  background: rgba(18, 18, 27, 1);
+  background: rgba(255, 255, 255, 1);
   transform: translateY(-6px);
-  box-shadow: 0 0 24px rgba(13,223,255,0.4);
+  box-shadow: 0 0 24px rgba(26, 58, 31, 0.4);
 }
 
 /* section titles */
 h2 {
   margin-bottom: 1rem;
-  color: #0df;
+  color: #1a3a1f; /* Dark green */
   font-size: 1.6rem;
 }
 
@@ -113,8 +134,8 @@ table thead tr {
 table th {
   padding: 1rem 1.2rem;
   text-align: center;
-  background: #1a1a2e;
-  color: #0df;
+  background: #2a5c2f; /* Medium green */
+  color: #fff;
   font-weight: 600;
   border-radius: 12px 12px 0 0;
   position: relative;
@@ -127,8 +148,8 @@ table tbody tr {
 }
 
 table td {
-  background: #12121b;
-  color: #ddd;
+  background: #e8f5e9; /* Light green */
+  color: #333;
   padding: 1rem 1.2rem;
   text-align: center;
   border-radius: 0 0 12px 12px;
@@ -139,7 +160,7 @@ table td {
 
 table td:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 8px rgba(13,223,255,0.2);
+  box-shadow: 0 0 8px rgba(26, 58, 31, 0.2);
 }
 
 /* ─── Forms & Inputs ─────────────────────────────────────────── */
@@ -157,9 +178,9 @@ table td:hover {
 input[type="text"],
 input[type="password"],
 select {
-  background: #1a1a2e;
-  border: 1px solid #0df;
-  color: #ddd;
+  background: #fff;
+  border: 1px solid #1a3a1f; /* Dark green */
+  color: #333;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border-radius: 8px;
@@ -168,7 +189,7 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  box-shadow: 0 0 8px rgba(13,223,255,0.6);
+  box-shadow: 0 0 8px rgba(26, 58, 31, 0.6);
 }
 
 /* ─── Buttons ────────────────────────────────────────────────── */
@@ -202,16 +223,16 @@ button:active::after {
 }
 
 button.primary {
-  background: #0df;
-  color: #04040a;
+  background: #f8d210; /* Yellow */
+  color: #1a3a1f; /* Dark green */
 }
 button.primary:hover {
   transform: translateY(-2px);
 }
 
 button.danger {
-  background: #f33;
-  color: #12121b;
+  background: #e74c3c;
+  color: #fff;
 }
 button.danger:hover {
   transform: translateY(-2px);
@@ -220,11 +241,11 @@ button.danger:hover {
 .small-button {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
-  background: #ff0;
-  color: #12121b;
+  background: #f8d210; /* Yellow */
+  color: #1a3a1f; /* Dark green */
 }
 .small-button:hover {
-  box-shadow: 0 0 8px rgba(255,255,0,0.8);
+  box-shadow: 0 0 8px rgba(248, 210, 16, 0.8);
 }
 
 /* ─── Login Card ────────────────────────────────────────────── */
@@ -232,40 +253,40 @@ button.danger:hover {
   max-width: 360px;
   margin: 6rem auto;
   padding: 2rem;
-  background: #12121b;
-  border: 2px solid #0df;
-  box-shadow: 0 0 16px rgba(13,223,255,0.4);
+  background: #fff;
+  border: 2px solid #1a3a1f; /* Dark green */
+  box-shadow: 0 0 16px rgba(26, 58, 31, 0.4);
   border-radius: 12px;
   text-align: center;
   animation: fadeInUp 0.6s ease-out;
 }
 .login-card h1 {
   margin-bottom: 1.5rem;
-  color: #0df;
-  text-shadow: 0 0 8px rgba(13,223,255,0.6);
+  color: #1a3a1f; /* Dark green */
+  text-shadow: 0 0 8px rgba(26, 58, 31, 0.2);
 }
 .password-wrapper { display: flex; align-items: center; }
 .show-password {
   margin-left: 0.5rem;
   font-size: 0.85rem;
-  color: #0df;
+  color: #1a3a1f; /* Dark green */
   cursor: pointer;
 }
 .show-password input { margin-right: 0.25rem; }
 .small-link {
   display: block;
   margin-top: 1.5rem;
-  color: #0df;
+  color: #1a3a1f; /* Dark green */
   font-size: 0.9rem;
 }
 .small-link:hover {
-  text-shadow: 0 0 6px rgba(13,223,255,0.6);
+  text-shadow: 0 0 6px rgba(26, 58, 31, 0.4);
 }
 
 /* ─── Match Cards (Alternative to Tables) ────────────────────── */
 .match-card {
-  background: #12121b;
-  border: 1px solid #0df;
+  background: #e8f5e9; /* Light green */
+  border: 1px solid #1a3a1f; /* Dark green */
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -276,7 +297,7 @@ button.danger:hover {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-  color: #0df;
+  color: #1a3a1f; /* Dark green */
 }
 
 .match-teams {
@@ -295,13 +316,13 @@ button.danger:hover {
 }
 
 .team-score {
-  color: #0df;
+  color: #1a3a1f; /* Dark green */
 }
 
 .match-winner {
   margin-top: 0.5rem;
   font-style: italic;
-  color: #0df;
+  color: #1a3a1f; /* Dark green */
   text-align: center;
 }
 
@@ -396,14 +417,16 @@ button.danger:hover {
   to   { transform: translateY(0);     opacity: 1; }
 }
 
-#particles-js {
+.lottie-animation {
   position: fixed;
   width: 100%;
   height: 100%;
   z-index: -1;
   top: 0;
   left: 0;
+  opacity: 0.15;
 }
+
 /* ─── Header ─────────────────────────────────────────────────── */
 header {
   padding: 1rem;
@@ -432,7 +455,7 @@ nav {
 }
 
 .nav-link {
-  color: #0df;
+  color: #f8d210; /* Yellow */
   font-weight: 600;
   position: relative;
   overflow: hidden;
@@ -450,12 +473,12 @@ main {
 
 /* ─── Cards ──────────────────────────────────────────────────── */
 .card {
-  background: rgba(18, 18, 27, 0.4);
-  border: 1px solid #0df;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #1a3a1f; /* Dark green */
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 0 12px rgba(13,223,255,0.2);
+  box-shadow: 0 0 12px rgba(26, 58, 31, 0.2);
   transition: transform 0.3s, box-shadow 0.3s;
   animation: fadeInUp 0.6s ease-out;
   width: 100%;
@@ -479,6 +502,7 @@ main {
   .logo-title {
     min-width: 200px;
   }
+  
   
   .logo {
     height: 40px;

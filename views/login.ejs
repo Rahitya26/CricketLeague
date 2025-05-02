@@ -6,9 +6,10 @@
   <title>Admin Login</title>
   <link rel="stylesheet" href="/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </head>
 <body>
-  <div id="particles-js"></div>
+  <dotlottie-player class="lottie-animation" src="https://lottie.host/9ba59918-caf6-4268-88be-d0bc9d8c3d30/XKNsfmg6t0.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
   
   <main class="login-card">
     <h1>Admin Login</h1>
@@ -30,25 +31,6 @@
       const pwd = document.getElementById('password');
       pwd.type = this.checked ? 'text' : 'password';
     });
-    
-    // Initialize particles.js with lighter settings for login page
-    if (typeof particlesJS !== 'undefined') {
-      particlesJS("particles-js", {
-        particles: {
-          number: { value: 40, density: { enable: true, value_area: 800 } },
-          color: { value: "#0df" },
-          opacity: { value: 0.3, random: true },
-          size: { value: 2, random: true },
-          line_linked: { enable: true, distance: 200, color: "#0df", opacity: 0.2, width: 1 },
-          move: { enable: true, speed: 2 }
-        },
-        interactivity: {
-          events: {
-            onhover: { enable: true, mode: "repulse" }
-          }
-        }
-      });
-    }
   </script>
 </body>
 </html>

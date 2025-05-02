@@ -6,99 +6,214 @@
   <title>Epstein Cricket League</title>
   <link rel="stylesheet" href="/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <style>
+    .lottie-animation {
+      opacity: 1;
+      filter: brightness(1.5);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+    }
+    
+    .welcome-message {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      z-index: 9998;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    
+    .welcome-message.show {
+      opacity: 1;
+    }
+    
+    .welcome-message.fade-out {
+      opacity: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .welcome-message {
+        font-size: 2rem;
+        text-align: center;
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div id="particles-js"></div>
 
-  <header>
-    <div class="logo-title">
-      <img src="/logo.png" alt="ECL Logo" class="logo">
-      <h1><a href="/">Epstein Cricket League</a></h1>
-    </div>
-    <nav>
+  <!-- Lottie Animation -->
+  <dotlottie-player id="lottie-animation" class="lottie-animation" src="https://lottie.host/9ba59918-caf6-4268-88be-d0bc9d8c3d30/XKNsfmg6t0.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+
+  <!-- Welcome Message -->
+  <div id="welcome-message" class="welcome-message">
+    Welcome to Epstein Cricket League
+  </div>
+
+  <!-- Content (Initially hidden) -->
+  <div id="content" style="display: none;">
+    <!-- Your existing content here -->
+    <header>
+      <div class="logo-title">
+        <img src="/logo.png" alt="ECL Logo" class="logo">
+        <h1><a href="/">Epstein Cricket League</a></h1>
+      </div>
+      <nav>
+        <% if (isAdmin) { %>
+          <a href="/logout" class="nav-link">Logout</a>
+        <% } else { %>
+          <a href="/admin" class="nav-link">Admin Login</a>
+        <% } %>
+      </nav>
+    </header>
+
+    <main>
       <% if (isAdmin) { %>
-        <a href="/logout" class="nav-link">Logout</a>
-      <% } else { %>
-        <a href="/admin" class="nav-link">Admin Login</a>
+        <section class="card">
+          <h2>Add New Match</h2>
+          <form action="/add-match" method="POST" class="form-inline">
+            <select name="team1" required>
+              <% for (let t in teams) { %>
+                <option value="<%= t %>"><%= t %></option>
+              <% } %>
+            </select>
+            <span style="color:#1a3a1f; font-weight:600;">vs</span>
+            <select name="team2" required>
+              <% for (let t in teams) { %>
+                <option value="<%= t %>"><%= t %></option>
+              <% } %>
+            </select>
+            <button type="submit" class="primary">Create</button>
+          </form>
+        </section>
       <% } %>
-    </nav>
-  </header>
 
-  <main>
-    <% if (isAdmin) { %>
-      <section class="card">
-        <h2>Add New Match</h2>
-        <form action="/add-match" method="POST" class="form-inline">
-          <select name="team1" required>
-            <% for (let t in teams) { %>
-              <option value="<%= t %>"><%= t %></option>
-            <% } %>
-          </select>
-          <span style="color:#0df; font-weight:600;">vs</span>
-          <select name="team2" required>
-            <% for (let t in teams) { %>
-              <option value="<%= t %>"><%= t %></option>
-            <% } %>
-          </select>
-          <button type="submit" class="primary">Create</button>
-        </form>
-      </section>
-    <% } %>
-
-    <section class="card points-card">
-      <h2>Points Table</h2>
-      <div class="desktop-only">
-        <table>
-          <thead><tr><th>Team</th><th>Points</th></tr></thead>
-          <tbody>
-            <% Object.entries(points).sort((a,b)=>b[1]-a[1]).forEach(([t,p]) => { %>
-              <tr>
-                <td><strong><%= t %></strong><span class="captain">– <%= teams[t] %></span></td>
-                <td><%= p %></td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-      <div class="mobile-only">
-        <% Object.entries(points).sort((a,b)=>b[1]-a[1]).forEach(([t,p]) => { %>
-          <div class="match-card">
-            <div class="team-row">
-              <span class="team-name"><%= t %></span>
-              <span class="team-score"><%= p %> pts</span>
+      <section class="card points-card">
+        <h2>Points Table</h2>
+        <div class="desktop-only">
+          <table>
+            <thead><tr><th>Team</th><th>Points</th></tr></thead>
+            <tbody>
+              <% Object.entries(points).sort((a,b)=>b[1]-a[1]).forEach(([t,p]) => { %>
+                <tr>
+                  <td><strong><%= t %></strong><span class="captain">– <%= teams[t] %></span></td>
+                  <td><%= p %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <div class="mobile-only">
+          <% Object.entries(points).sort((a,b)=>b[1]-a[1]).forEach(([t,p]) => { %>
+            <div class="match-card">
+              <div class="team-row">
+                <span class="team-name"><%= t %></span>
+                <span class="team-score"><%= p %> pts</span>
+              </div>
+              <div class="captain">Captain: <%= teams[t] %></div>
             </div>
-            <div class="captain">Captain: <%= teams[t] %></div>
-          </div>
-        <% }) %>
-      </div>
-    </section>
+          <% }) %>
+        </div>
+      </section>
 
-    <section class="card">
-      <h2>Matches</h2>
-      <div class="desktop-only">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th><th>Team 1</th><th>Team 2</th>
-              <th>Score 1</th><th>Score 2</th><th>Winner</th>
-              <% if (isAdmin) { %><th>Actions</th><% } %>
-            </tr>
-          </thead>
-          <tbody>
-            <% matches.sort((a, b) => b.id - a.id).forEach(m => { %>
-              <tr class="<%= m.winner ? 'completed' : '' %>">
-                <td><%= m.id %></td>
-                <td>
-                  <%= m.team1 %><span class="captain">– <%= teams[m.team1] %></span>
-                </td>
-                <td>
-                  <%= m.team2 %><span class="captain">– <%= teams[m.team2] %></span>
-                </td>
-                <td><%= m.score_team1 ?? '–' %></td>
-                <td><%= m.score_team2 ?? '–' %></td>
-                <td><%= m.winner ?? '–' %></td>
-                <% if (isAdmin) { %>
+      <section class="card">
+        <h2>Matches</h2>
+        <div class="desktop-only">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Team 1</th><th>Team 2</th>
+                <th>Score 1</th><th>Score 2</th><th>Winner</th>
+                <% if (isAdmin) { %><th>Actions</th><% } %>
+              </tr>
+            </thead>
+            <tbody>
+              <% matches.sort((a, b) => b.id - a.id).forEach(m => { %>
+                <tr class="<%= m.winner ? 'completed' : '' %>">
+                  <td><%= m.id %></td>
                   <td>
+                    <%= m.team1 %><span class="captain">– <%= teams[m.team1] %></span>
+                  </td>
+                  <td>
+                    <%= m.team2 %><span class="captain">– <%= teams[m.team2] %></span>
+                  </td>
+                  <td><%= m.score_team1 ?? '–' %></td>
+                  <td><%= m.score_team2 ?? '–' %></td>
+                  <td><%= m.winner ?? '–' %></td>
+                  <% if (isAdmin) { %>
+                    <td>
+                      <div id="edit-form-<%= m.id %>" class="<%= m.winner ? 'hidden' : '' %>">
+                        <form action="/update-winner" method="POST" class="form-block">
+                          <input type="hidden" name="matchId" value="<%= m.id %>">
+                          <input type="text" name="score_team1" placeholder="Score <%= m.team1 %>" required>
+                          <input type="text" name="score_team2" placeholder="Score <%= m.team2 %>" required>
+                          <select name="winner" required>
+                            <option value="<%= m.team1 %>"><%= m.team1 %></option>
+                            <option value="<%= m.team2 %>"><%= m.team2 %></option>
+                          </select>
+                          <button type="submit" class="primary">Update</button>
+                        </form>
+                      </div>
+                      <% if (m.winner) { %>
+                        <button class="small-button" onclick="enableEdit('<%= m.id %>')">Edit Scores</button>
+                      <% } %>
+                      <form action="/delete-match" method="POST" class="form-inline">
+                        <input type="hidden" name="id" value="<%= m.id %>">
+                        <button type="submit" class="danger">Delete</button>
+                      </form>
+                    </td>
+                  <% } %>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mobile-only">
+          <div class="card-grid">
+            <% matches.sort((a, b) => b.id - a.id).forEach(m => { %>
+              <div class="match-card">
+                <div class="match-header">
+                  <span>Match #<%= m.id %></span>
+                  <% if (m.winner) { %>
+                    <span class="completed">Completed</span>
+                  <% } else { %>
+                    <span class="pending">Ongoing</span>
+                  <% } %>
+                </div>
+                
+                <div class="match-teams">
+                  <div class="team-row">
+                    <span class="team-name"><%= m.team1 %></span>
+                    <span class="team-score"><%= m.score_team1 ?? '–' %></span>
+                  </div>
+                  <div class="team-row">
+                    <span class="team-name"><%= m.team2 %></span>
+                    <span class="team-score"><%= m.score_team2 ?? '–' %></span>
+                  </div>
+                </div>
+                
+                <% if (m.winner) { %>
+                  <div class="match-winner">Winner: <%= m.winner %></div>
+                <% } %>
+                
+                <% if (isAdmin) { %>
+                  <div class="match-actions">
                     <div id="edit-form-<%= m.id %>" class="<%= m.winner ? 'hidden' : '' %>">
                       <form action="/update-winner" method="POST" class="form-block">
                         <input type="hidden" name="matchId" value="<%= m.id %>">
@@ -111,157 +226,55 @@
                         <button type="submit" class="primary">Update</button>
                       </form>
                     </div>
+                    
                     <% if (m.winner) { %>
                       <button class="small-button" onclick="enableEdit('<%= m.id %>')">Edit Scores</button>
                     <% } %>
-                    <form action="/delete-match" method="POST" class="form-inline">
+                    
+                    <form action="/delete-match" method="POST">
                       <input type="hidden" name="id" value="<%= m.id %>">
-                      <button type="submit" class="danger">Delete</button>
-                    </form>
-                  </td>
-                <% } %>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="mobile-only">
-        <div class="card-grid">
-          <% matches.sort((a, b) => b.id - a.id).forEach(m => { %>
-            <div class="match-card">
-              <div class="match-header">
-                <span>Match #<%= m.id %></span>
-                <% if (m.winner) { %>
-                  <span class="completed">Completed</span>
-                <% } else { %>
-                  <span class="pending">Ongoing</span>
-                <% } %>
-              </div>
-              
-              <div class="match-teams">
-                <div class="team-row">
-                  <span class="team-name"><%= m.team1 %></span>
-                  <span class="team-score"><%= m.score_team1 ?? '–' %></span>
-                </div>
-                <div class="team-row">
-                  <span class="team-name"><%= m.team2 %></span>
-                  <span class="team-score"><%= m.score_team2 ?? '–' %></span>
-                </div>
-              </div>
-              
-              <% if (m.winner) { %>
-                <div class="match-winner">Winner: <%= m.winner %></div>
-              <% } %>
-              
-              <% if (isAdmin) { %>
-                <div class="match-actions">
-                  <div id="edit-form-<%= m.id %>" class="<%= m.winner ? 'hidden' : '' %>">
-                    <form action="/update-winner" method="POST" class="form-block">
-                      <input type="hidden" name="matchId" value="<%= m.id %>">
-                      <input type="text" name="score_team1" placeholder="Score <%= m.team1 %>" required>
-                      <input type="text" name="score_team2" placeholder="Score <%= m.team2 %>" required>
-                      <select name="winner" required>
-                        <option value="<%= m.team1 %>"><%= m.team1 %></option>
-                        <option value="<%= m.team2 %>"><%= m.team2 %></option>
-                      </select>
-                      <button type="submit" class="primary">Update</button>
+                      <button type="submit" class="danger">Delete Match</button>
                     </form>
                   </div>
-                  
-                  <% if (m.winner) { %>
-                    <button class="small-button" onclick="enableEdit('<%= m.id %>')">Edit Scores</button>
-                  <% } %>
-                  
-                  <form action="/delete-match" method="POST">
-                    <input type="hidden" name="id" value="<%= m.id %>">
-                    <button type="submit" class="danger">Delete Match</button>
-                  </form>
-                </div>
-              <% } %>
-            </div>
-          <% }) %>
+                <% } %>
+              </div>
+            <% }) %>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
+  </div> <!-- End content -->
 
   <script>
+    window.onload = function() {
+      const lottieAnimation = document.getElementById('lottie-animation');
+      const welcomeMessage = document.getElementById('welcome-message');
+      const content = document.getElementById('content');
+      
+      lottieAnimation.play();
+
+      // After 2.5 seconds, hide Lottie and show welcome message
+      setTimeout(function() {
+        lottieAnimation.style.display = 'none';
+        welcomeMessage.classList.add('show');
+        
+        // After 2 seconds, fade out welcome message
+        setTimeout(function() {
+          welcomeMessage.classList.add('fade-out');
+          
+          // After fade out completes (0.5s), show content
+          setTimeout(function() {
+            welcomeMessage.style.display = 'none';
+            content.style.display = 'block';
+          }, 500);
+        }, 800);
+      }, 2000);
+    };
+
     function enableEdit(matchId) {
       const editForm = document.getElementById(`edit-form-${matchId}`);
       if (editForm) editForm.classList.remove('hidden');
     }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  <script>
-    particlesJS("particles-js", {
-      particles: {
-        number: {
-          value: 80,
-          density: {
-            enable: true,
-            value_area: 800
-          }
-        },
-        color: {
-          value: "#0df"
-        },
-        shape: {
-          type: "circle",
-          stroke: {
-            width: 0,
-            color: "#000000"
-          }
-        },
-        opacity: {
-          value: 0.5,
-          random: false
-        },
-        size: {
-          value: 3,
-          random: true
-        },
-        line_linked: {
-          enable: true,
-          distance: 150,
-          color: "#0df",
-          opacity: 0.4,
-          width: 1
-        },
-        move: {
-          enable: true,
-          speed: 3,
-          direction: "none",
-          random: false,
-          straight: false,
-          out_mode: "out"
-        }
-      },
-      interactivity: {
-        detect_on: "canvas",
-        events: {
-          onhover: {
-            enable: true,
-            mode: "repulse"
-          },
-          onclick: {
-            enable: true,
-            mode: "push"
-          },
-          resize: true
-        },
-        modes: {
-          repulse: {
-            distance: 100,
-            duration: 0.4
-          },
-          push: {
-            particles_nb: 4
-          }
-        }
-      },
-      retina_detect: true
-    });
   </script>
 </body>
 </html>
