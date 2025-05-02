@@ -4,7 +4,6 @@ const path = require('path');
 const db = require('./db');
 require('dotenv').config();
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
@@ -39,17 +38,63 @@ const teams = {
 app.get('/', async (req, res) => {
   const { rows: matches } = await db.query('SELECT * FROM matches ORDER BY id');
   
-  // compute points
-  const points = {};
-  for (let t in teams) points[t] = 0;
+  // Initialize team statistics
+  const teamStats = {};
+  for (let t in teams) {
+    teamStats[t] = {
+      points: 0,
+      matchesPlayed: 0,
+      matchesWon: 0,
+      matchesLost: 0,
+      runsScored: 0,
+      runsConceded: 0,
+      oversFaced: 0,
+      oversBowled: 0
+    };
+  }
+
+  // Calculate statistics from matches
   matches.forEach(m => {
-    if (m.winner) points[m.winner] += 2;
+    if (m.winner) {
+      // Only count completed matches
+      const winner = m.winner;
+      const loser = m.team1 === winner ? m.team2 : m.team1;
+      
+      // Update winner stats
+      teamStats[winner].points += 2;
+      teamStats[winner].matchesWon += 1;
+      teamStats[winner].matchesPlayed += 1;
+      teamStats[winner].runsScored += parseInt(m.winner === m.team1 ? m.score_team1 : m.score_team2);
+      teamStats[winner].runsConceded += parseInt(m.winner === m.team1 ? m.score_team2 : m.score_team1);
+      teamStats[winner].oversFaced += 5; // Assuming 5 overs per match
+      teamStats[winner].oversBowled += 5;
+      
+      // Update loser stats
+      teamStats[loser].matchesLost += 1;
+      teamStats[loser].matchesPlayed += 1;
+      teamStats[loser].runsScored += parseInt(loser === m.team1 ? m.score_team1 : m.score_team2);
+      teamStats[loser].runsConceded += parseInt(loser === m.team1 ? m.score_team2 : m.score_team1);
+      teamStats[loser].oversFaced += 5;
+      teamStats[loser].oversBowled += 5;
+    }
   });
+
+  // Calculate NRR for each team
+  for (let t in teamStats) {
+    const stats = teamStats[t];
+    if (stats.matchesPlayed > 0) {
+      const runRateFor = stats.runsScored / stats.oversFaced;
+      const runRateAgainst = stats.runsConceded / stats.oversBowled;
+      stats.nrr = (runRateFor - runRateAgainst).toFixed(2);
+    } else {
+      stats.nrr = 0;
+    }
+  }
 
   res.render('index', {
     teams,
     matches,
-    points,
+    teamStats,
     isAdmin: req.session.loggedIn
   });
 });
@@ -107,4 +152,3 @@ app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
-

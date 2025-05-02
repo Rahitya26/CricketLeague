@@ -526,3 +526,25 @@ main {
     font-size: 0.9rem;
   }
 }
+
+/* Add to your existing styles */
+.qualifying {
+  background-color: rgba(46, 204, 113, 0.1);
+  border-left: 3px solid #2ecc71;
+}
+
+.playoff-notice {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+  color: #1a3a1f;
+  border: 1px solid #d4edda;
+}
+
+.mobile-only .qualifying {
+  border-left: 3px solid #2ecc71;
+  background-color: rgba(46, 204, 113, 0.1);
+}

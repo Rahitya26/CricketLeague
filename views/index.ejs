@@ -46,6 +46,52 @@
       opacity: 0;
     }
     
+    .positive {
+      color: #2ecc71;
+      font-weight: bold;
+    }
+    
+    .negative {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    
+    .nrr-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+      font-size: 0.9rem;
+    }
+    
+    .qualifying {
+      background-color: rgba(46, 204, 113, 0.1);
+      border-left: 3px solid #2ecc71;
+    }
+    
+    .playoff-notice {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: bold;
+      color: #1a3a1f;
+      border: 1px solid #d4edda;
+    }
+    
+    .mobile-only .qualifying {
+      border-left: 3px solid #2ecc71;
+      background-color: rgba(46, 204, 113, 0.1);
+    }
+    
     @media (max-width: 768px) {
       .welcome-message {
         font-size: 2rem;
@@ -67,7 +113,6 @@
 
   <!-- Content (Initially hidden) -->
   <div id="content" style="display: none;">
-    <!-- Your existing content here -->
     <header>
       <div class="logo-title">
         <img src="/logo.png" alt="ECL Logo" class="logo">
@@ -107,27 +152,56 @@
         <h2>Points Table</h2>
         <div class="desktop-only">
           <table>
-            <thead><tr><th>Team</th><th>Points</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th>P</th>
+                <th>W</th>
+                <th>L</th>
+                <th>Pts</th>
+                <th>NRR</th>
+              </tr>
+            </thead>
             <tbody>
-              <% Object.entries(points).sort((a,b)=>b[1]-a[1]).forEach(([t,p]) => { %>
-                <tr>
+              <% Object.entries(teamStats).sort((a,b) => b[1].points - a[1].points || b[1].nrr - a[1].nrr).forEach(([t, stats], index) => { %>
+                <tr class="<%= index < 4 ? 'qualifying' : '' %>">
                   <td><strong><%= t %></strong><span class="captain">– <%= teams[t] %></span></td>
-                  <td><%= p %></td>
+                  <td><%= stats.matchesPlayed %></td>
+                  <td><%= stats.matchesWon %></td>
+                  <td><%= stats.matchesLost %></td>
+                  <td><%= stats.points %></td>
+                  <td class="<%= stats.nrr > 0 ? 'positive' : (stats.nrr < 0 ? 'negative' : '') %>">
+                    <%= stats.nrr %>
+                  </td>
                 </tr>
               <% }) %>
             </tbody>
           </table>
         </div>
         <div class="mobile-only">
-          <% Object.entries(points).sort((a,b)=>b[1]-a[1]).forEach(([t,p]) => { %>
-            <div class="match-card">
+          <% Object.entries(teamStats).sort((a,b) => b[1].points - a[1].points || b[1].nrr - a[1].nrr).forEach(([t, stats], index) => { %>
+            <div class="match-card <%= index < 4 ? 'qualifying' : '' %>">
               <div class="team-row">
                 <span class="team-name"><%= t %></span>
-                <span class="team-score"><%= p %> pts</span>
+                <span class="team-score"><%= stats.points %> pts</span>
+              </div>
+              <div class="stats-row">
+                <span>P: <%= stats.matchesPlayed %></span>
+                <span>W: <%= stats.matchesWon %></span>
+                <span>L: <%= stats.matchesLost %></span>
+              </div>
+              <div class="nrr-row">
+                <span>NRR: </span>
+                <span class="<%= stats.nrr > 0 ? 'positive' : (stats.nrr < 0 ? 'negative' : '') %>">
+                  <%= stats.nrr %>
+                </span>
               </div>
               <div class="captain">Captain: <%= teams[t] %></div>
             </div>
           <% }) %>
+        </div>
+        <div class="playoff-notice">
+          <strong>Note:</strong> Top 4 teams will qualify for the playoffs!
         </div>
       </section>
 
