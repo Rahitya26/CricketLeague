@@ -29,7 +29,7 @@ const teams = {
   "England": "Rahitya",
   "South Africa": "Herald",
   "New Zealand": "Vishnu",
-  "Afghanistan": "Nitin"
+  "West Indies": "Nitin"
 };
 
 // --- Routes ---
@@ -55,27 +55,44 @@ app.get('/', async (req, res) => {
 
   // Calculate statistics from matches
   matches.forEach(m => {
-    if (m.winner) {
+    if (m.winner || m.is_tie) {
       // Only count completed matches
-      const winner = m.winner;
-      const loser = m.team1 === winner ? m.team2 : m.team1;
       
-      // Update winner stats
-      teamStats[winner].points += 2;
-      teamStats[winner].matchesWon += 1;
-      teamStats[winner].matchesPlayed += 1;
-      teamStats[winner].runsScored += parseInt(m.winner === m.team1 ? m.score_team1 : m.score_team2);
-      teamStats[winner].runsConceded += parseInt(m.winner === m.team1 ? m.score_team2 : m.score_team1);
-      teamStats[winner].oversFaced += 5; // Assuming 5 overs per match
-      teamStats[winner].oversBowled += 5;
-      
-      // Update loser stats
-      teamStats[loser].matchesLost += 1;
-      teamStats[loser].matchesPlayed += 1;
-      teamStats[loser].runsScored += parseInt(loser === m.team1 ? m.score_team1 : m.score_team2);
-      teamStats[loser].runsConceded += parseInt(loser === m.team1 ? m.score_team2 : m.score_team1);
-      teamStats[loser].oversFaced += 5;
-      teamStats[loser].oversBowled += 5;
+      if (m.is_tie) {
+        // Update both teams' stats for a tie
+        teamStats[m.team1].points += 1;
+        teamStats[m.team2].points += 1;
+        teamStats[m.team1].matchesPlayed += 1;
+        teamStats[m.team2].matchesPlayed += 1;
+        teamStats[m.team1].runsScored += parseInt(m.score_team1);
+        teamStats[m.team2].runsScored += parseInt(m.score_team2);
+        teamStats[m.team1].runsConceded += parseInt(m.score_team2);
+        teamStats[m.team2].runsConceded += parseInt(m.score_team1);
+        teamStats[m.team1].oversFaced += 5;
+        teamStats[m.team2].oversFaced += 5;
+        teamStats[m.team1].oversBowled += 5;
+        teamStats[m.team2].oversBowled += 5;
+      } else {
+        const winner = m.winner;
+        const loser = m.team1 === winner ? m.team2 : m.team1;
+        
+        // Update winner stats
+        teamStats[winner].points += 2;
+        teamStats[winner].matchesWon += 1;
+        teamStats[winner].matchesPlayed += 1;
+        teamStats[winner].runsScored += parseInt(m.winner === m.team1 ? m.score_team1 : m.score_team2);
+        teamStats[winner].runsConceded += parseInt(m.winner === m.team1 ? m.score_team2 : m.score_team1);
+        teamStats[winner].oversFaced += 5;
+        teamStats[winner].oversBowled += 5;
+        
+        // Update loser stats
+        teamStats[loser].matchesLost += 1;
+        teamStats[loser].matchesPlayed += 1;
+        teamStats[loser].runsScored += parseInt(loser === m.team1 ? m.score_team1 : m.score_team2);
+        teamStats[loser].runsConceded += parseInt(loser === m.team1 ? m.score_team2 : m.score_team1);
+        teamStats[loser].oversFaced += 5;
+        teamStats[loser].oversBowled += 5;
+      }
     }
   });
 
@@ -128,14 +145,16 @@ app.post('/add-match', async (req, res) => {
 // Update Winner + Scores
 app.post('/update-winner', async (req, res) => {
   if (!req.session.loggedIn) return res.sendStatus(403);
-  const { matchId, winner, score_team1, score_team2 } = req.body;
+  const { matchId, winner, score_team1, score_team2, is_tie, notes } = req.body;
   await db.query(
     `UPDATE matches
        SET winner = $1
          , score_team1 = $2
          , score_team2 = $3
-     WHERE id = $4`,
-    [winner, score_team1, score_team2, matchId]
+         , is_tie = $4
+         , notes = $5
+     WHERE id = $6`,
+    [winner, score_team1, score_team2, is_tie === 'on', notes, matchId]
   );
   res.redirect('/');
 });

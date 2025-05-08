@@ -93,6 +93,38 @@
       background-color: rgba(46, 204, 113, 0.1);
     }
     
+    .match-notes {
+      margin-top: 10px;
+      padding: 8px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    
+    .match-notes:empty {
+      display: none;
+    }
+    
+    .form-group {
+      margin: 10px 0;
+    }
+    
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      min-height: 60px;
+      margin-bottom: 10px;
+    }
+    
     @media (max-width: 768px) {
       .welcome-message {
         font-size: 2rem;
@@ -213,7 +245,7 @@
             <thead>
               <tr>
                 <th>ID</th><th>Team 1</th><th>Team 2</th>
-                <th>Score 1</th><th>Score 2</th><th>Winner</th>
+                <th>Score 1</th><th>Score 2</th><th>Result</th>
                 <% if (isAdmin) { %><th>Actions</th><% } %>
               </tr>
             </thead>
@@ -229,10 +261,21 @@
                   </td>
                   <td><%= m.score_team1 ?? '–' %></td>
                   <td><%= m.score_team2 ?? '–' %></td>
-                  <td><%= m.winner ?? '–' %></td>
+                  <td>
+                    <% if (m.is_tie) { %>
+                      Match Tied
+                    <% } else if (m.winner) { %>
+                      <%= m.winner %> won
+                    <% } else { %>
+                      –
+                    <% } %>
+                    <% if (m.notes) { %>
+                      <div class="match-notes"><%= m.notes %></div>
+                    <% } %>
+                  </td>
                   <% if (isAdmin) { %>
                     <td>
-                      <div id="edit-form-<%= m.id %>" class="<%= m.winner ? 'hidden' : '' %>">
+                      <div id="edit-form-<%= m.id %>" class="<%= m.winner || m.is_tie ? 'hidden' : '' %>">
                         <form action="/update-winner" method="POST" class="form-block">
                           <input type="hidden" name="matchId" value="<%= m.id %>">
                           <input type="text" name="score_team1" placeholder="Score <%= m.team1 %>" required>
@@ -241,10 +284,16 @@
                             <option value="<%= m.team1 %>"><%= m.team1 %></option>
                             <option value="<%= m.team2 %>"><%= m.team2 %></option>
                           </select>
+                          <div class="form-group">
+                            <label>
+                              <input type="checkbox" name="is_tie"> Match was a tie
+                            </label>
+                          </div>
+                          <textarea name="notes" placeholder="Match notes (optional)"><%= m.notes || '' %></textarea>
                           <button type="submit" class="primary">Update</button>
                         </form>
                       </div>
-                      <% if (m.winner) { %>
+                      <% if (m.winner || m.is_tie) { %>
                         <button class="small-button" onclick="enableEdit('<%= m.id %>')">Edit Scores</button>
                       <% } %>
                       <form action="/delete-match" method="POST" class="form-inline">
@@ -265,7 +314,7 @@
               <div class="match-card">
                 <div class="match-header">
                   <span>Match #<%= m.id %></span>
-                  <% if (m.winner) { %>
+                  <% if (m.winner || m.is_tie) { %>
                     <span class="completed">Completed</span>
                   <% } else { %>
                     <span class="pending">Ongoing</span>
@@ -283,13 +332,23 @@
                   </div>
                 </div>
                 
-                <% if (m.winner) { %>
-                  <div class="match-winner">Winner: <%= m.winner %></div>
+                <div class="match-result">
+                  <% if (m.is_tie) { %>
+                    Match Tied
+                  <% } else if (m.winner) { %>
+                    Winner: <%= m.winner %>
+                  <% } %>
+                </div>
+                
+                <% if (m.notes) { %>
+                  <div class="match-notes">
+                    <strong>Notes:</strong> <%= m.notes %>
+                  </div>
                 <% } %>
                 
                 <% if (isAdmin) { %>
                   <div class="match-actions">
-                    <div id="edit-form-<%= m.id %>" class="<%= m.winner ? 'hidden' : '' %>">
+                    <div id="edit-form-<%= m.id %>" class="<%= m.winner || m.is_tie ? 'hidden' : '' %>">
                       <form action="/update-winner" method="POST" class="form-block">
                         <input type="hidden" name="matchId" value="<%= m.id %>">
                         <input type="text" name="score_team1" placeholder="Score <%= m.team1 %>" required>
@@ -298,11 +357,17 @@
                           <option value="<%= m.team1 %>"><%= m.team1 %></option>
                           <option value="<%= m.team2 %>"><%= m.team2 %></option>
                         </select>
+                        <div class="form-group">
+                          <label>
+                            <input type="checkbox" name="is_tie"> Match was a tie
+                          </label>
+                        </div>
+                        <textarea name="notes" placeholder="Match notes (optional)"><%= m.notes || '' %></textarea>
                         <button type="submit" class="primary">Update</button>
                       </form>
                     </div>
                     
-                    <% if (m.winner) { %>
+                    <% if (m.winner || m.is_tie) { %>
                       <button class="small-button" onclick="enableEdit('<%= m.id %>')">Edit Scores</button>
                     <% } %>
                     
