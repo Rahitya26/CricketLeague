@@ -166,6 +166,56 @@ app.post('/delete-match', async (req, res) => {
   res.redirect('/');
 });
 
+// Add these new routes after your existing routes in app.js
+
+// Get playoff matches (public)
+app.get('/playoffs', async (req, res) => {
+  const { rows: playoffMatches } = await db.query('SELECT * FROM playoff_matches ORDER BY id');
+  const { rows: teams } = await db.query('SELECT DISTINCT team1 as team FROM matches UNION SELECT DISTINCT team2 as team FROM matches');
+  
+  res.render('playoffs', {
+    playoffMatches,
+    teams: teams.map(t => t.team),
+    isAdmin: req.session.loggedIn
+  });
+});
+
+// Add playoff match (admin only)
+app.post('/add-playoff-match', async (req, res) => {
+  if (!req.session.loggedIn) return res.sendStatus(403);
+  
+  const { match_type, team1, team2 } = req.body;
+  await db.query(
+    'INSERT INTO playoff_matches (match_type, team1, team2) VALUES ($1, $2, $3)',
+    [match_type, team1, team2]
+  );
+  
+  res.redirect('/playoffs');
+});
+
+// Update playoff match result (admin only)
+app.post('/update-playoff-result', async (req, res) => {
+  if (!req.session.loggedIn) return res.sendStatus(403);
+  
+  const { matchId, winner, score_team1, score_team2, notes } = req.body;
+  await db.query(
+    `UPDATE playoff_matches
+     SET winner = $1, score_team1 = $2, score_team2 = $3, notes = $4
+     WHERE id = $5`,
+    [winner, score_team1, score_team2, notes, matchId]
+  );
+  
+  res.redirect('/playoffs');
+});
+
+// Delete playoff match (admin only)
+app.post('/delete-playoff-match', async (req, res) => {
+  if (!req.session.loggedIn) return res.sendStatus(403);
+  
+  await db.query('DELETE FROM playoff_matches WHERE id = $1', [req.body.id]);
+  res.redirect('/playoffs');
+});
+
 // Logout
 app.get('/logout', (req, res) => {
   req.session.destroy();
