@@ -18,6 +18,11 @@
       background: #1a3a1f;
       color: white;
       padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
     }
 
     .logo-title {
@@ -35,7 +40,37 @@
       text-decoration: none;
     }
 
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
 
+    .nav-link {
+      color: #f8d210;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+
+    .season-selector select {
+      background: #f8d210;
+      color: #1a3a1f;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .season-selector select:focus {
+      outline: none;
+      box-shadow: 0 0 8px rgba(248, 210, 16, 0.8);
+    }
 
     .container {
       padding: 20px;
@@ -76,6 +111,7 @@
       font-weight: 600;
       padding: 4px 8px;
       border-radius: 4px;
+      font-size: 0.9rem;
     }
 
     .completed { background-color: #e8f5e9; color: #1a3a1f; }
@@ -169,6 +205,18 @@
       <h1><a href="/">Epstein Cricket League - Playoffs</a></h1>
     </div>
     <nav>
+      <% if (seasons && seasons.length > 0) { %>
+        <div class="season-selector">
+          <select onchange="if(this.value) window.location.href='/set-season?seasonId='+this.value">
+            <% seasons.forEach(season => { %>
+              <option value="<%= season.id %>" <%= currentSeason && currentSeason.id === season.id ? 'selected' : '' %>>
+                <%= season.name %>
+                <% if (season.winner) { %> (Winner: <%= season.winner %>) <% } %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+      <% } %>
       <a href="/" class="nav-link">Home</a>
       <% if (isAdmin) { %>
         <a href="/logout" class="nav-link">Logout</a>

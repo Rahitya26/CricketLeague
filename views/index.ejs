@@ -124,6 +124,28 @@
       min-height: 60px;
       margin-bottom: 10px;
     }
+
+    .season-selector select {
+      background: #f8d210;
+      color: #1a3a1f;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .season-selector select:focus {
+      outline: none;
+      box-shadow: 0 0 8px rgba(248, 210, 16, 0.8);
+    }
+
+    .season-winner-form {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+    }
     
     @media (max-width: 768px) {
       .welcome-message {
@@ -141,28 +163,75 @@
 
   <!-- Welcome Message -->
   <div id="welcome-message" class="welcome-message">
-    Welcome to Epstein Cricket League
+    <% if (currentSeason && currentSeason.winner) { %>
+      <%= currentSeason.name %> Winner: 
+      <br>
+      <%= currentSeason.winner %>
+    <% } else { %>
+      Season 1 Tournament winner 
+      <br>
+      Radha (Australia) 
+    <% } %>
   </div>
 
   <!-- Content (Initially hidden) -->
   <div id="content" style="display: none;">
-    <header>
-      <div class="logo-title">
-        <img src="/logo.png" alt="ECL Logo" class="logo">
-        <h1><a href="/">Epstein Cricket League</a></h1>
+<header>
+  <div class="logo-title">
+    <img src="/logo.png" alt="ECL Logo" class="logo">
+    <h1><a href="/">Epstein Cricket League</a></h1>
+  </div>
+  <nav>
+    <% if (seasons && seasons.length > 0) { %>
+      <div class="season-selector">
+        <select onchange="window.location.href='/set-season?seasonId='+this.value">
+          <% seasons.forEach(season => { %>
+            <option value="<%= season.id %>" <%= currentSeason && currentSeason.id === season.id ? 'selected' : '' %>>
+              <%= season.name %>
+              <% if (season.winner) { %> (Winner: <%= season.winner %>) <% } %>
+            </option>
+          <% }); %>
+        </select>
       </div>
-      <nav>
-        <a href="/playoffs" class="nav-link">Playoffs</a>
+    <% } %>
+    <!-- Rest of your nav links -->
+      <a href="/playoffs" class="nav-link">Playoffs</a>
         <% if (isAdmin) { %>
           <a href="/logout" class="nav-link">Logout</a>
         <% } else { %>
           <a href="/admin" class="nav-link">Admin Login</a>
         <% } %>
-      </nav>
-    </header>
+  </nav>
+</header>
 
     <main>
       <% if (isAdmin) { %>
+        <section class="card">
+          <h2>Season Management</h2>
+          <% if (currentSeason) { %>
+            <p>Current season: <strong><%= currentSeason.name %></strong></p>
+            <% if (!currentSeason.winner) { %>
+              <div class="season-winner-form">
+                <form action="/set-season-winner" method="POST">
+                  <input type="hidden" name="seasonId" value="<%= currentSeason.id %>">
+                  <select name="winner" required>
+                    <option value="">Select Season Winner</option>
+                    <% Object.keys(teams).forEach(team => { %>
+                      <option value="<%= team %> (<%= teams[team] %>)"><%= team %> (<%= teams[team] %>)</option>
+                    <% }); %>
+                  </select>
+                  <button type="submit" class="primary">Set Winner</button>
+                </form>
+              </div>
+            <% } %>
+          <% } %>
+          <form action="/create-season" method="POST" class="form-inline">
+            <input type="text" name="name" placeholder="Season name" required>
+            <input type="date" name="start_date" required>
+            <button type="submit" class="primary">Start New Season</button>
+          </form>
+        </section>
+
         <section class="card">
           <h2>Add New Match</h2>
           <form action="/add-match" method="POST" class="form-inline">

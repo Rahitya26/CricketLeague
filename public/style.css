@@ -701,3 +701,85 @@ main {
     padding: 15px;
   }
 }
+
+/* Season Selector */
+.season-selector select {
+  background: #f8d210;
+  color: #1a3a1f;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.season-selector select:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(248, 210, 16, 0.8);
+}
+
+/* Season Management */
+.season-winner-form {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.season-winner-form select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+/* Header adjustments for season selector */
+header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .season-selector {
+    width: 100%;
+  }
+  
+  .season-selector select {
+    width: 100%;
+  }
+}
+
+/* Add to style.css */
+.season-selector {
+  margin-right: 15px;
+}
+
+.season-selector select {
+  background: #f8d210;
+  color: #1a3a1f;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .season-selector {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .season-selector select {
+    width: 100%;
+  }
+}
