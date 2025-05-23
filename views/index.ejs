@@ -268,7 +268,10 @@
             <tbody>
               <% Object.entries(teamStats).sort((a,b) => b[1].points - a[1].points || b[1].nrr - a[1].nrr).forEach(([t, stats], index) => { %>
                 <tr class="<%= index < 4 ? 'qualifying' : '' %>">
-                  <td><strong><%= t %></strong><span class="captain">– <%= teams[t] %></span></td>
+                  <td>
+                    <a href="/team-info/<%= t %>" class="team-link"><strong><%= t %></strong></a>
+                    <a href="/team-info/<%= teams[t] %>" class="captain-link"><%= teams[t] %></a>
+                  </td>
                   <td><%= stats.matchesPlayed %></td>
                   <td><%= stats.matchesWon %></td>
                   <td><%= stats.matchesLost %></td>
@@ -314,7 +317,7 @@
           <table>
             <thead>
               <tr>
-                <th>ID</th><th>Team 1</th><th>Team 2</th>
+                <th>Team 1</th><th>Team 2</th>
                 <th>Score 1</th><th>Score 2</th><th>Result</th>
                 <% if (isAdmin) { %><th>Actions</th><% } %>
               </tr>
@@ -322,7 +325,6 @@
             <tbody>
               <% matches.sort((a, b) => b.id - a.id).forEach(m => { %>
                 <tr class="<%= m.winner ? 'completed' : '' %>">
-                  <td><%= m.id %></td>
                   <td>
                     <%= m.team1 %><span class="captain">– <%= teams[m.team1] %></span>
                   </td>

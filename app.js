@@ -196,6 +196,81 @@ app.get('/playoffs', async (req, res) => {
   });
 });
 
+// Unified team/captain route
+app.get('/team-info/:identifier', async (req, res) => {
+  try {
+    const { identifier } = req.params;
+    const { rows: activeSeasons } = await db.query('SELECT * FROM seasons WHERE is_active = true LIMIT 1');
+    const activeSeason = activeSeasons[0];
+    const { rows: allSeasons } = await db.query('SELECT * FROM seasons ORDER BY id');
+    const teams = getTeamsForSeason(activeSeason?.id);
+
+    // Determine if identifier is a team name or captain name
+    let teamName, captainName;
+    if (teams[identifier]) { // If identifier is a team name
+      teamName = identifier;
+      captainName = teams[identifier];
+    } else { // If identifier is a captain name
+      for (const [team, captain] of Object.entries(teams)) {
+        if (captain === identifier) {
+          teamName = team;
+          captainName = identifier;
+          break;
+        }
+      }
+    }
+
+    if (!teamName || !captainName) {
+      return res.status(404).send('Team or captain not found');
+    }
+
+    // Get team matches
+    const { rows: matches } = await db.query(
+      `SELECT * FROM matches 
+       WHERE season_id = $1 AND (team1 = $2 OR team2 = $2)
+       ORDER BY id DESC LIMIT 5`,
+      [activeSeason?.id, teamName]
+    );
+
+    // Calculate stats (only for completed matches)
+    let totalMatches = 0;
+    let wins = 0;
+    let losses = 0;
+    let ties = 0;
+    
+    matches.forEach(m => {
+      if (m.winner) { // Only count completed matches
+        if (m.winner === teamName) wins++;
+        else if (m.is_tie) ties++;
+        else losses++;
+        totalMatches++;
+      }
+    });
+    
+    const winPercentage = totalMatches > 0 ? ((wins / totalMatches) * 100).toFixed(1) : 0;
+    
+    res.render('team-info', {
+      teamName,
+      captainName,
+      matches,
+      stats: {
+        totalMatches,
+        wins,
+        losses,
+        ties,
+        winPercentage
+      },
+      currentSeason: activeSeason,
+      seasons: allSeasons,
+      isAdmin: req.session.loggedIn
+    });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+
 app.post('/add-playoff-match', async (req, res) => {
   if (!req.session.loggedIn) return res.sendStatus(403);
   const { rows } = await db.query('SELECT id FROM seasons WHERE is_active = true LIMIT 1');

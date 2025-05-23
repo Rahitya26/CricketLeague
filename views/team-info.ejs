@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= teamName %> - <%= captainName %> | ECL</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #1a3a1f 0%, #2a5c2f 100%);
+      border-radius: 12px;
+      color: white;
+    }
+    
+    .captain-photo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 6px solid #f8d210;
+      box-shadow: 0 0 20px rgba(248, 210, 16, 0.5);
+    }
+    
+    .profile-info {
+      flex: 1;
+    }
+    
+    .profile-info h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .profile-info h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #f8d210;
+    }
+    
+    .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-value {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: bold;
+  color: #1a3a1f;
+  margin-bottom: 0.3rem;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  color: #555;
+  font-weight: 600;
+}
+
+/* For very small screens */
+@media (max-width: 400px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .stat-card {
+    padding: 1rem;
+    min-height: 80px;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}
+
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    
+    .recent-matches {
+      margin-top: 3rem;
+    }
+    
+    .match-card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .winner {
+      font-weight: bold;
+      color: #1a3a1f;
+      text-decoration: underline;
+    }
+    
+    .match-result {
+      font-weight: 600;
+      color: #2a5c2f;
+      margin: 1rem 0;
+    }
+    
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+      }
+      
+      .captain-photo {
+        width: 150px;
+        height: 150px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .profile-info h1 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+}
+
+.profile-info h2 {
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+}
+
+.match-card {
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="/logo.png" alt="ECL Logo" class="logo">
+      <h1><a href="/">Epstein Cricket League</a></h1>
+    </div>
+    <nav>
+      <% if (seasons && seasons.length > 0) { %>
+        <div class="season-selector">
+          <select onchange="window.location.href='/set-season?seasonId='+this.value">
+            <% seasons.forEach(season => { %>
+              <option value="<%= season.id %>" <%= currentSeason && currentSeason.id === season.id ? 'selected' : '' %>>
+                <%= season.name %>
+                <% if (season.winner) { %> (Winner: <%= season.winner %>) <% } %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+      <% } %>
+      <a href="/playoffs" class="nav-link">Playoffs</a>
+      <% if (isAdmin) { %>
+        <a href="/logout" class="nav-link">Logout</a>
+      <% } else { %>
+        <a href="/admin" class="nav-link">Admin Login</a>
+      <% } %>
+    </nav>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="profile-header">
+        <img src="/captain-photos/<%= captainName.toLowerCase().replace(' ', '-') %>.jpeg" 
+             alt="<%= captainName %>" 
+             class="captain-photo" 
+             onerror="this.src='/logo.png'">
+        <div class="profile-info">
+          <h1><%= teamName %></h1>
+          <h2>Captain: <%= captainName %></h2>
+          <p>Current Season: <%= currentSeason.name %></p>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.totalMatches %></div>
+    <div class="stat-label">Matches Played</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.wins %></div>
+    <div class="stat-label">Wins</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.losses %></div>
+    <div class="stat-label">Losses</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.winPercentage %>%</div>
+    <div class="stat-label">Win Percentage</div>
+  </div>
+</div>
+      
+      <h3>Recent Matches</h3>
+      <div class="recent-matches">
+        <% matches.forEach(m => { %>
+          <div class="match-card">
+            <div class="match-teams">
+              <div class="<%= m.winner === m.team1 ? 'winner' : '' %>">
+                <%= m.team1 %>: <%= m.score_team1 || '–' %>
+              </div>
+              <div>vs</div>
+              <div class="<%= m.winner === m.team2 ? 'winner' : '' %>">
+                <%= m.team2 %>: <%= m.score_team2 || '–' %>
+              </div>
+            </div>
+            <% if (m.winner) { %>
+              <div class="match-result">Winner: <%= m.winner %></div>
+            <% } else if (m.is_tie) { %>
+              <div class="match-result">Match Tied</div>
+            <% } %>
+            <% if (m.notes) { %>
+              <div class="match-notes"><%= m.notes %></div>
+            <% } %>
+          </div>
+        <% }); %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
