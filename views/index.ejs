@@ -288,8 +288,8 @@
           <% Object.entries(teamStats).sort((a,b) => b[1].points - a[1].points || b[1].nrr - a[1].nrr).forEach(([t, stats], index) => { %>
             <div class="match-card <%= index < 4 ? 'qualifying' : '' %>">
               <div class="team-row">
-                <span class="team-name"><%= t %></span>
-                <span class="team-score"><%= stats.points %> pts</span>
+                    <a href="/team-info/<%= t %>" class="team-link"><strong><%= t %></strong></a>
+                    <a href="/team-info/<%= teams[t] %>" class="captain-link"><%= teams[t] %></a>
               </div>
               <div class="stats-row">
                 <span>P: <%= stats.matchesPlayed %></span>
