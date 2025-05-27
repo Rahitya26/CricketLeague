@@ -282,6 +282,22 @@ app.post('/add-playoff-match', async (req, res) => {
   res.redirect('/playoffs');
 });
 
+app.get('/developer', async (req, res) => {
+  try {
+    const { rows: activeSeasons } = await db.query('SELECT * FROM seasons WHERE is_active = true LIMIT 1');
+    const { rows: allSeasons } = await db.query('SELECT * FROM seasons ORDER BY id');
+    
+    res.render('developer', {
+      currentSeason: activeSeasons[0],
+      seasons: allSeasons,
+      isAdmin: req.session.loggedIn
+    });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
 app.post('/update-playoff-result', async (req, res) => {
   if (!req.session.loggedIn) return res.sendStatus(403);
   const { matchId, winner, score_team1, score_team2, notes } = req.body;

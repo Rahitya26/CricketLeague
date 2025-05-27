@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Info | Epstein Cricket League</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .developer-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      width: 90%;
+    }
+    
+    .developer-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+    
+    .developer-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .developer-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #f8d210;
+    }
+    
+    .developer-info h1 {
+      font-size: 1.8rem;
+      color: #1a3a1f;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+    
+    .developer-info h2 {
+      font-size: 1.1rem;
+      color: #2a5c2f;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    
+    .developer-bio {
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+    
+    .developer-bio p {
+      margin-bottom: 0.8rem;
+    }
+    
+    .contact-info {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+    }
+    
+    .contact-info h3 {
+      font-size: 1.3rem;
+      color: #1a3a1f;
+      margin-bottom: 1rem;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      font-size: 0.95rem;
+      word-break: break-all;
+    }
+    
+    .contact-icon {
+      margin-right: 10px;
+      color: #1a3a1f;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    
+    @media (min-width: 768px) {
+      .developer-container {
+        padding: 2rem;
+      }
+      
+      .developer-card {
+        padding: 2rem;
+      }
+      
+      .developer-header {
+        flex-direction: row;
+        text-align: left;
+        gap: 2rem;
+      }
+      
+      .developer-photo {
+        width: 150px;
+        height: 150px;
+      }
+      
+      .developer-info h1 {
+        font-size: 2rem;
+      }
+      
+      .developer-info h2 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="/logo.png" alt="ECL Logo" class="logo">
+      <h1><a href="/">Epstein Cricket League</a></h1>
+    </div>
+    <nav>
+      <% if (seasons && seasons.length > 0) { %>
+        <div class="season-selector">
+          <select onchange="window.location.href='/set-season?seasonId='+this.value">
+            <% seasons.forEach(season => { %>
+              <option value="<%= season.id %>" <%= currentSeason && currentSeason.id === season.id ? 'selected' : '' %>>
+                <%= season.name %>
+                <% if (season.winner) { %> (Winner: <%= season.winner %>) <% } %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+      <% } %>
+      <a href="/playoffs" class="nav-link">Playoffs</a>
+      <a href="/developer" class="nav-link">Contact us</a>
+      <% if (isAdmin) { %>
+        <a href="/logout" class="nav-link">Logout</a>
+      <% } else { %>
+        <a href="/admin" class="nav-link">Admin Login</a>
+      <% } %>
+    </nav>
+  </header>
+
+  <main class="developer-container">
+    <div class="developer-card">
+      <div class="developer-header">
+        <img src="/captain-photos/rahitya.jpeg" alt="Developer Photo" class="developer-photo" onerror="this.src='/logo.png'">
+        <div class="developer-info">
+          <h1>Rahitya Karamchedu</h1>
+          <h2>Full Stack Developer</h2>
+          <div class="developer-bio">
+            <p>The Epstein Cricket League platform was developed to streamline cricket tournament management and provide real-time statistics.</p>
+            <p>Made with ❤️ by Rahitya.K</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="contact-info">
+        <h3>Contact Information</h3>
+        <div class="contact-item">
+          <span class="contact-icon">📧</span>
+          <span>rahitya2614@gmail.com</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">💼</span>
+          <span>LinkedIn: Rahitya Karamchedu</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">🐱</span>
+          <span>GitHub: Rahitya26</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
